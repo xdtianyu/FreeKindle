@@ -1,19 +1,16 @@
 # Kindle
 
-## Install dependencies
+## 运行
 
-```shell
-pip3 install -r requirements.txt
 ```
-
-## Run
-
-```shell
-python3 kindle.py
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install -r requirements.txt -I
+python kindle.py
 ```
 
 **crontab**
 
-```shell
+```
 5 0 * * * /path/to/kindle/cron.sh >> /var/log/kindle.log 2>&1
 ```
