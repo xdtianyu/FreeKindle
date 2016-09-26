@@ -2,3 +2,5 @@ kindle.json
 .idea
 __pycache__
 venv
+config.py
+cache
