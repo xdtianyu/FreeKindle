@@ -20,7 +20,19 @@ pip install -r requirements.txt -I
 python kindle.py
 ```
 
-**crontab**
+## 获取免费电子书数据
+
+```shell
+python free_book.py
+```
+
+## 生成数据库
+
+```shell
+python generator.py
+```
+
+**crontab 定时任务**
 
 ```shell
 5 0 * * * /path/to/kindle/cron.sh >> /var/log/kindle.log 2>&1
