@@ -4,6 +4,7 @@ import json
 import os.path
 
 import sqlite3
+import zipfile
 
 from book import Book
 from status import Status
@@ -54,6 +55,15 @@ def load_book(file):
                 else:
                     print('no language')
                     print(book.json())
+
+
+def compress(file_name):
+    zip_file = file_name + ".zip"
+    zf = zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED)
+    zf.write(file_name, arcname=os.path.basename(file_name))
+    zf.close()
+    return zip_file
+
 
 if not os.path.exists(data_dir):
     os.mkdir(data_dir)
@@ -209,14 +219,14 @@ cur.execute('''CREATE TABLE IF NOT EXISTS status
 
 cur.execute('insert into status (version, count, new_count, time) values (?, ?, ?, ?)', status.to_list())
 
-conn.commit()
-cur.close()
-conn.close()
+# conn.commit()
+# cur.close()
+# conn.close()
 
 # save reviews to database
 
-conn = sqlite3.connect('data/reviews_' + str(status.version) + '.db')
-cur = conn.cursor()
+# conn = sqlite3.connect('data/reviews_' + str(status.version) + '.db')
+# cur = conn.cursor()
 cur.execute('''CREATE TABLE IF NOT EXISTS review (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     item_id TEXT,
@@ -232,3 +242,6 @@ cur.executemany('''insert into review (
 conn.commit()
 cur.close()
 conn.close()
+
+zip_f = compress('data/books_' + str(status.version) + '.db')
+status.update(zip_f)
