@@ -5,7 +5,9 @@ class Node:
     is_root = False
     name = None
 
-    def __init__(self, o):
+    def __init__(self, o=None):
+        if o is None:
+            o = dict()
         self.__dict__ = o
 
         if 'node' in o:

@@ -33,14 +33,15 @@ class Book:
     nodes = None
 
     def __init__(self, o=None):
+        if o is None:
+            o = dict()
         self.__dict__ = o
         nodes = []
-        for n in o['nodes']:
-            node = Node(n)
-            nodes.append(node)
-        self.nodes = nodes
-        if 'languages' in o:
-            self.languages = o['languages'][0]
+        if 'nodes' in o:
+            for n in o['nodes']:
+                node = Node(n)
+                nodes.append(node)
+            self.nodes = nodes
 
     def json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2, ensure_ascii=False, sort_keys=True)
@@ -49,10 +50,14 @@ class Book:
         return clean_dict(self.__dict__)
 
     def dict(self):
-        return self.title, self.author, self.score, self.url, \
-               self.item_id, self.pages, self.publisher, self.brand, self.asin, self.edition, self.isbn, \
-               self.large_image_url, self.medium_image_url, self.small_image_url, self.region, self.release_date, \
-               self.publication_date, self.languages
+        languages = None
+        if self.languages and len(self.languages) >= 0:
+            languages = self.languages[0]
+        return (
+            self.title, self.author, self.score, self.url, self.item_id, self.pages, self.publisher, self.brand,
+            self.asin, self.edition, self.isbn, self.large_image_url, self.medium_image_url, self.small_image_url,
+            self.region, self.release_date, self.publication_date, languages
+        )
 
 
 def clean_dict(d):
