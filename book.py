@@ -51,7 +51,7 @@ class Book:
 
     def dict(self):
         languages = None
-        if self.languages and len(self.languages) >= 0:
+        if self.languages and len(self.languages) > 0:
             languages = self.languages[0]
         return (
             self.title, self.author, self.score, self.url, self.item_id, self.pages, self.publisher, self.brand,

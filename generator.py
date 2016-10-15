@@ -14,6 +14,10 @@ books_cn = []
 books_en = []
 ids = set()
 
+nodes = []
+
+reviews = []
+
 
 def load_book(file):
     if os.path.isfile(file):
@@ -24,12 +28,13 @@ def load_book(file):
                 if book.item_id in ids:
                     print('added: ' + book.item_id)
                     continue
-                if book.languages:
-                    if book.languages == 'chinese' or book.languages == 'traditional_chinese':
+                if book.languages and len(book.languages) > 0:
+                    if book.languages[0] == 'chinese' or book.languages[0] == 'traditional_chinese':
                         books_cn.append(book.dict())
                     else:
                         books_en.append(book.dict())
                     ids.add(book.item_id)
+                    reviews.append((book.item_id, book.editorial_review))
                 else:
                     print('no language')
                     print(book.json())
@@ -155,3 +160,22 @@ conn.commit()
 cur.close()
 conn.close()
 
+# save reviews to database
+
+conn = sqlite3.connect('data/reviews_' + str(status.version) + '.db')
+cur = conn.cursor()
+cur.execute('''CREATE TABLE IF NOT EXISTS review (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT,
+    editorial_review TEXT
+    );''')
+
+cur.executemany('''insert into review (
+    item_id,
+    editorial_review
+    ) values (?, ?)
+    ''', reviews)
+
+conn.commit()
+cur.close()
+conn.close()
