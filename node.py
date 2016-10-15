@@ -16,6 +16,11 @@ class Node:
     def dump(self):
         return clean_dict(self.__dict__)
 
+    def tuple(self):
+        return (
+            self.id, self.name, self.is_root
+        )
+
 
 def clean_dict(d):
     if not isinstance(d, dict):

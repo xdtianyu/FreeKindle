@@ -49,7 +49,7 @@ class Book:
     def dump(self):
         return clean_dict(self.__dict__)
 
-    def dict(self):
+    def tuple(self):
         languages = None
         if self.languages and len(self.languages) > 0:
             languages = self.languages[0]

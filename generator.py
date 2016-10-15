@@ -14,7 +14,9 @@ books_cn = []
 books_en = []
 ids = set()
 
-nodes = []
+nodes = dict()
+node_map = []
+node_relation = dict()
 
 reviews = []
 
@@ -30,15 +32,28 @@ def load_book(file):
                     continue
                 if book.languages and len(book.languages) > 0:
                     if book.languages[0] == 'chinese' or book.languages[0] == 'traditional_chinese':
-                        books_cn.append(book.dict())
+                        books_cn.append(book.tuple())
                     else:
-                        books_en.append(book.dict())
+                        books_en.append(book.tuple())
                     ids.add(book.item_id)
                     reviews.append((book.item_id, book.editorial_review))
+
+                    if book.nodes:
+                        for node in book.nodes:
+                            node_map.append((book.item_id, node.id))
+                            while True:
+                                if node.id not in nodes:
+                                    nodes[node.id] = node.tuple()
+                                if not node.is_root:
+                                    node_key = str(node.id) + '-' + str(node.node.id)
+                                    if node_key not in node_relation:
+                                        node_relation[node_key] = (node.id, node.node.id)
+                                    node = node.node
+                                else:
+                                    break
                 else:
                     print('no language')
                     print(book.json())
-
 
 if not os.path.exists(data_dir):
     os.mkdir(data_dir)
@@ -150,6 +165,44 @@ cur.executemany('''insert into book_en (
     languages
     ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', books_en)
+
+cur.execute('''CREATE TABLE IF NOT EXISTS node (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    node_id INTEGER,
+    name TEXT,
+    is_root INTEGER
+    );''')
+
+cur.executemany('''insert into node (
+    node_id,
+    name,
+    is_root
+    ) values (?, ?, ?)
+    ''', list(nodes.values()))
+
+cur.execute('''CREATE TABLE IF NOT EXISTS node_relation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descendant INTEGER,
+    ancestor INTEGER
+    );''')
+
+cur.executemany('''insert into node_relation (
+    descendant,
+    ancestor
+    ) values (?, ?)
+    ''', list(node_relation.values()))
+
+cur.execute('''CREATE TABLE IF NOT EXISTS node_map (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT,
+    node_id INTEGER
+    );''')
+
+cur.executemany('''insert into node_map (
+    item_id,
+    node_id
+    ) values (?, ?)
+    ''', node_map)
 
 cur.execute('''CREATE TABLE IF NOT EXISTS status
     ( id INTEGER PRIMARY KEY AUTOINCREMENT, version INTEGER, count INTEGER, new_count INTEGER, time INTEGER );''')
