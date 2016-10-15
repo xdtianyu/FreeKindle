@@ -5,6 +5,12 @@ class Node:
     is_root = False
     name = None
 
+    def __init__(self, o):
+        self.__dict__ = o
+
+        if 'node' in o:
+            self.node = Node(o['node'])
+
     def dump(self):
         return clean_dict(self.__dict__)
 

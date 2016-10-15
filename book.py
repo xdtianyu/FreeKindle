@@ -1,5 +1,7 @@
 import json
 
+from node import Node
+
 
 class Book:
     title = ''
@@ -29,6 +31,14 @@ class Book:
     small_image_url = None
     languages = None
     nodes = None
+
+    def __init__(self, o):
+        self.__dict__ = o
+        nodes = []
+        for n in o['nodes']:
+            node = Node(n)
+            nodes.append(node)
+        self.nodes = nodes
 
     def json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2, ensure_ascii=False, sort_keys=True)
