@@ -12,15 +12,27 @@ data_dir = 'data'
 
 books_cn = []
 books_en = []
+ids = set()
 
 
-def load_book(books, file):
+def load_book(file):
     if os.path.isfile(file):
         with open(file) as json_data:
             d = json.load(json_data)
             for b in d['books']:
                 book = Book(b)
-                books.append(book)
+                if book.item_id in ids:
+                    print('added: ' + book.item_id)
+                    continue
+                if book.languages:
+                    if book.languages == 'chinese' or book.languages == 'traditional_chinese':
+                        books_cn.append(book.dict())
+                    else:
+                        books_en.append(book.dict())
+                    ids.add(book.item_id)
+                else:
+                    print('no language')
+                    print(book.json())
 
 
 if not os.path.exists(data_dir):
@@ -32,8 +44,8 @@ if not os.path.exists(data_dir):
 for i in range(1, 401):
     f_cn = 'page/kindle_free_books_cn_' + str(i) + '.json'
     f_en = 'page/kindle_free_books_en_' + str(i) + '.json'
-    load_book(books_cn, f_cn)
-    load_book(books_en, f_en)
+    load_book(f_cn)
+    load_book(f_en)
 
 # save to database
 
@@ -46,17 +58,93 @@ status.bump()
 
 conn = sqlite3.connect('data/books_' + str(status.version) + '.db')
 cur = conn.cursor()
-cur.execute('''CREATE TABLE IF NOT EXISTS book_cn
-    ( id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT UNIQUE, name TEXT, count INTEGER, type INTEGER, source INTEGER,
-    time INTEGER );''')
+cur.execute('''CREATE TABLE IF NOT EXISTS book_cn (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    author TEXT,
+    score REAL,
+    url TEXT,
+    item_id TEXT,
+    pages TEXT,
+    publisher TEXT,
+    brand TEXT,
+    asin TEXT,
+    edition TEXT,
+    isbn TEXT,
+    large_image_url TEXT,
+    medium_image_url TEXT,
+    small_image_url TEXT,
+    region TEXT,
+    release_date TEXT,
+    publication_date TEXT,
+    languages TEXT
+    );''')
 
-cur.executemany('insert into book_cn (number, name, count, type, source, time) values (?, ?, ?, ?, ?, ?)', books_cn)
+cur.executemany('''insert into book_cn (
+    title,
+    author,
+    score,
+    url,
+    item_id,
+    pages,
+    publisher,
+    brand,
+    asin,
+    edition,
+    isbn,
+    large_image_url,
+    medium_image_url,
+    small_image_url,
+    region,
+    release_date,
+    publication_date,
+    languages
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', books_cn)
 
-cur.execute('''CREATE TABLE IF NOT EXISTS book_en
-    ( id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT UNIQUE, name TEXT, count INTEGER, type INTEGER, source INTEGER,
-    time INTEGER );''')
+cur.execute('''CREATE TABLE IF NOT EXISTS book_en (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    author TEXT,
+    score REAL,
+    url TEXT,
+    item_id TEXT,
+    pages TEXT,
+    publisher TEXT,
+    brand TEXT,
+    asin TEXT,
+    edition TEXT,
+    isbn TEXT,
+    large_image_url TEXT,
+    medium_image_url TEXT,
+    small_image_url TEXT,
+    region TEXT,
+    release_date TEXT,
+    publication_date TEXT,
+    languages TEXT
+    );''')
 
-cur.executemany('insert into book_en (number, name, count, type, source, time) values (?, ?, ?, ?, ?, ?)', books_en)
+cur.executemany('''insert into book_en (
+    title,
+    author,
+    score,
+    url,
+    item_id,
+    pages,
+    publisher,
+    brand,
+    asin,
+    edition,
+    isbn,
+    large_image_url,
+    medium_image_url,
+    small_image_url,
+    region,
+    release_date,
+    publication_date,
+    languages
+    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', books_en)
 
 cur.execute('''CREATE TABLE IF NOT EXISTS status
     ( id INTEGER PRIMARY KEY AUTOINCREMENT, version INTEGER, count INTEGER, new_count INTEGER, time INTEGER );''')

@@ -23,28 +23,36 @@ class Book:
     editorial_review = None
     isbn = None
     large_image_url = None
+    medium_image_url = None
+    small_image_url = None
     region = None
     release_date = None
-    sales_rank = None
-    medium_image_url = None
     publication_date = None
-    small_image_url = None
+    sales_rank = None
     languages = None
     nodes = None
 
-    def __init__(self, o):
+    def __init__(self, o=None):
         self.__dict__ = o
         nodes = []
         for n in o['nodes']:
             node = Node(n)
             nodes.append(node)
         self.nodes = nodes
+        if 'languages' in o:
+            self.languages = o['languages'][0]
 
     def json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2, ensure_ascii=False, sort_keys=True)
 
     def dump(self):
         return clean_dict(self.__dict__)
+
+    def dict(self):
+        return self.title, self.author, self.score, self.url, \
+               self.item_id, self.pages, self.publisher, self.brand, self.asin, self.edition, self.isbn, \
+               self.large_image_url, self.medium_image_url, self.small_image_url, self.region, self.release_date, \
+               self.publication_date, self.languages
 
 
 def clean_dict(d):
