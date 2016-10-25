@@ -48,6 +48,9 @@ def fetch(url, headers, cookies):
             import amz
             amz.lookup(book)
 
+            if book.languages and len(book.languages) > 0:
+                book.languages = book.languages[0]
+
             kindle['books'].append(book)
 
     with io.open('kindle.json', 'w', encoding='utf-8') as f:
