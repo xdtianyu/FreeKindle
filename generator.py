@@ -88,7 +88,7 @@ status.bump()
 
 conn = sqlite3.connect('data/books_' + str(status.version) + '.db')
 cur = conn.cursor()
-cur.execute('''CREATE TABLE IF NOT EXISTS book_cn (
+cur.execute('''CREATE TABLE IF NOT EXISTS book (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     author TEXT,
@@ -110,7 +110,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS book_cn (
     languages TEXT
     );''')
 
-cur.executemany('''insert into book_cn (
+cur.executemany('''insert into book (
     title,
     author,
     score,
@@ -130,51 +130,7 @@ cur.executemany('''insert into book_cn (
     publication_date,
     languages
     ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', books_cn)
-
-cur.execute('''CREATE TABLE IF NOT EXISTS book_en (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    author TEXT,
-    score REAL,
-    url TEXT,
-    item_id TEXT,
-    pages TEXT,
-    publisher TEXT,
-    brand TEXT,
-    asin TEXT,
-    edition TEXT,
-    isbn TEXT,
-    large_image_url TEXT,
-    medium_image_url TEXT,
-    small_image_url TEXT,
-    region TEXT,
-    release_date TEXT,
-    publication_date TEXT,
-    languages TEXT
-    );''')
-
-cur.executemany('''insert into book_en (
-    title,
-    author,
-    score,
-    url,
-    item_id,
-    pages,
-    publisher,
-    brand,
-    asin,
-    edition,
-    isbn,
-    large_image_url,
-    medium_image_url,
-    small_image_url,
-    region,
-    release_date,
-    publication_date,
-    languages
-    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', books_en)
+    ''', books_cn + books_en)
 
 cur.execute('''CREATE TABLE IF NOT EXISTS node (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
