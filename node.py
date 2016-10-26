@@ -1,7 +1,7 @@
 
 class Node:
     node = None  # ancestor
-    id = None
+    node_id = None
     is_root = False
     name = None
 
@@ -18,7 +18,7 @@ class Node:
 
     def tuple(self):
         return (
-            self.id, self.name, self.is_root
+            self.node_id, self.name, self.is_root
         )
 
 

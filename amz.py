@@ -63,7 +63,7 @@ def lookup(book):
                 node = Node()
                 book.nodes.append(node)
                 while True:
-                    node.id = browse_node.id
+                    node.node_id = browse_node.id
                     node.name = str(browse_node.name)
                     if not browse_node.is_category_root:
                         node.node = Node()
