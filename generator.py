@@ -41,6 +41,7 @@ def load_book(file):
 
                     if book.nodes:
                         for node in book.nodes:
+                            node.node_id = node.id
                             node_map.append((book.item_id, node.node_id))
                             while True:
                                 if node.node_id not in nodes:
