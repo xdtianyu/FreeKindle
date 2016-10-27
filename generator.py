@@ -41,14 +41,14 @@ def load_book(file):
 
                     if book.nodes:
                         for node in book.nodes:
-                            node_map.append((book.item_id, node.id))
+                            node_map.append((book.item_id, node.node_id))
                             while True:
-                                if node.id not in nodes:
-                                    nodes[node.id] = node.tuple()
+                                if node.node_id not in nodes:
+                                    nodes[node.node_id] = node.tuple()
                                 if not node.is_root:
-                                    node_key = str(node.id) + '-' + str(node.node.id)
+                                    node_key = str(node.node_id) + '-' + str(node.node.node_id)
                                     if node_key not in node_relation:
-                                        node_relation[node_key] = (node.id, node.node.id)
+                                        node_relation[node_key] = (node.node_id, node.node.node_id)
                                     node = node.node
                                 else:
                                     break
