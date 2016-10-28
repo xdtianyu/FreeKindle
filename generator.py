@@ -47,6 +47,7 @@ def load_book(file):
                                 if node.node_id not in nodes:
                                     nodes[node.node_id] = node.tuple()
                                 if not node.is_root:
+                                    node.node.node_id = node.node.id
                                     node_key = str(node.node_id) + '-' + str(node.node.node_id)
                                     if node_key not in node_relation:
                                         node_relation[node_key] = (node.node_id, node.node.node_id)

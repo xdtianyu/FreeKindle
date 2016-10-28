@@ -37,6 +37,8 @@ class Status:
             f.write(json.dumps(self.json()))
 
     def to_list(self):
+        if not self.timestamp:
+            self.timestamp = int(time.mktime(datetime.now().utctimetuple()))
         return [self.version, self.count, self.new_count, self.timestamp]
 
     def bump(self):
