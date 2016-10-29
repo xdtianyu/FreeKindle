@@ -70,7 +70,6 @@ def compress(file_name):
 if not os.path.exists(data_dir):
     os.mkdir(data_dir)
 
-
 # read data to list
 
 for i in range(1, 401):
@@ -197,8 +196,7 @@ cur.executemany('''insert into review (
     ) values (?, ?)
     ''', reviews)
 
-
-cur.execute('PRAGMA user_version = ?', status.version)
+cur.execute('PRAGMA user_version = {v:d}'.format(v=status.version))
 
 conn.commit()
 cur.close()
