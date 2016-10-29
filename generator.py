@@ -197,6 +197,9 @@ cur.executemany('''insert into review (
     ) values (?, ?)
     ''', reviews)
 
+
+cur.execute('PRAGMA user_version = ?', status.version)
+
 conn.commit()
 cur.close()
 conn.close()
