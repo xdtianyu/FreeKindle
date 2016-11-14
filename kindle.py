@@ -37,7 +37,8 @@ def fetch(url, headers, cookies):
                 book.item_id = re.match('.*product/(.*)/ref', a.get('href')).group(1)
                 book.title = a.get('title')
 
-            matches = re.match('.*历史均价：￥(.*)，现价：￥(.*)作者：(.*)，评分：(.*)，历史最低价：￥(.*)', book_item.text)
+            matches = re.match('.*历史均价：￥(\d+\.*\d*)，现价：￥(\d+\.*\d*)作者：(.*)，评分：(\d+\.*\d*)，历史最低价：￥(\d+\.*\d*)',
+                               book_item.text)
 
             book.average = matches.group(1)
             book.price = matches.group(2)
@@ -55,6 +56,7 @@ def fetch(url, headers, cookies):
 
     with io.open('kindle.json', 'w', encoding='utf-8') as f:
         f.write(json.dumps(kindle, default=lambda o: o.dump(), indent=2, ensure_ascii=False, sort_keys=True))
+
 
 if __name__ == '__main__':
     fetch('http://t.bookdna.cn', config.header, {})
